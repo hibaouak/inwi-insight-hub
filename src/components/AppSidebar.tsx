@@ -1,27 +1,35 @@
-import { NavLink, useLocation } from "react-router-dom";
-import { LayoutDashboard, MessageSquare, BarChart3, AlertTriangle, Settings, Shield } from "lucide-react";
+import { NavLink, useLocation, useNavigate } from "react-router-dom";
+import { LayoutDashboard, MessageSquare, Settings, Shield, History, LogOut } from "lucide-react";
 import {
   Sidebar, SidebarContent, SidebarGroup, SidebarGroupContent, SidebarGroupLabel,
   SidebarMenu, SidebarMenuButton, SidebarMenuItem, SidebarFooter, SidebarHeader, useSidebar,
 } from "@/components/ui/sidebar";
 import { Logo } from "./Logo";
 import { cn } from "@/lib/utils";
+import { useAuth } from "@/contexts/AuthContext";
 
 const mainItems = [
-  { title: "Dashboard", url: "/app", icon: LayoutDashboard },
-  { title: "Chat IA", url: "/app/chat", icon: MessageSquare, badge: "AI" },
-  { title: "Analytics", url: "/app/analytics", icon: BarChart3 },
-  { title: "Incidents", url: "/app/incidents", icon: AlertTriangle },
+  { title: "Tableau de bord", url: "/app", icon: LayoutDashboard },
+  { title: "Chat IA", url: "/app/chat", icon: MessageSquare, badge: "IA" },
+  { title: "Historique", url: "/app/historique", icon: History },
 ];
+
 const bottomItems = [
-  { title: "Settings", url: "/app/settings", icon: Settings },
-  { title: "Admin", url: "/app/admin", icon: Shield },
+  { title: "Paramètres", url: "/app/settings", icon: Settings },
+  { title: "Administration", url: "/app/admin", icon: Shield },
 ];
 
 export function AppSidebar() {
   const { state } = useSidebar();
   const collapsed = state === "collapsed";
   const { pathname } = useLocation();
+  const { user, logout } = useAuth();
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    logout();
+    navigate("/");
+  };
 
   const renderItem = (item: typeof mainItems[number]) => {
     const active = pathname === item.url || (item.url !== "/app" && pathname.startsWith(item.url));
@@ -66,7 +74,11 @@ export function AppSidebar() {
 
       <SidebarContent className="px-2 py-4">
         <SidebarGroup>
-          {!collapsed && <SidebarGroupLabel className="text-[10px] uppercase tracking-widest text-muted-foreground/60 px-2">Workspace</SidebarGroupLabel>}
+          {!collapsed && (
+            <SidebarGroupLabel className="text-[10px] uppercase tracking-widest text-muted-foreground/60 px-2">
+              Espace de travail
+            </SidebarGroupLabel>
+          )}
           <SidebarGroupContent>
             <SidebarMenu className="gap-1">{mainItems.map(renderItem)}</SidebarMenu>
           </SidebarGroupContent>
@@ -75,16 +87,36 @@ export function AppSidebar() {
 
       <SidebarFooter className="px-2 py-3 border-t border-sidebar-border">
         <SidebarMenu className="gap-1">{bottomItems.map(renderItem)}</SidebarMenu>
-        {!collapsed && (
-          <div className="mt-3 px-2 flex items-center gap-2.5">
-            <div className="h-8 w-8 rounded-full bg-gradient-primary flex items-center justify-center text-xs font-bold">
-              YE
+
+        {!collapsed && user && (
+          <div className="mt-3 px-2">
+            <div className="flex items-center gap-2.5 mb-2">
+              <div className="h-8 w-8 rounded-full bg-gradient-primary flex items-center justify-center text-xs font-bold shrink-0">
+                {user.initials}
+              </div>
+              <div className="flex-1 min-w-0">
+                <div className="text-xs font-medium truncate">{user.name}</div>
+                <div className="text-[10px] text-muted-foreground truncate">{user.role}</div>
+              </div>
             </div>
-            <div className="flex-1 min-w-0">
-              <div className="text-xs font-medium truncate">Youssef El Amrani</div>
-              <div className="text-[10px] text-muted-foreground truncate">NOC Analyst</div>
-            </div>
+            <button
+              onClick={handleLogout}
+              className="w-full flex items-center gap-2 px-2 py-1.5 rounded-lg text-xs text-muted-foreground hover:text-danger hover:bg-danger/10 transition-colors"
+            >
+              <LogOut className="h-3.5 w-3.5" />
+              Déconnexion
+            </button>
           </div>
+        )}
+
+        {collapsed && (
+          <SidebarMenu className="gap-1 mt-1">
+            <SidebarMenuItem>
+              <SidebarMenuButton tooltip="Déconnexion" onClick={handleLogout}>
+                <LogOut className="h-[18px] w-[18px] text-muted-foreground hover:text-danger" />
+              </SidebarMenuButton>
+            </SidebarMenuItem>
+          </SidebarMenu>
         )}
       </SidebarFooter>
     </Sidebar>

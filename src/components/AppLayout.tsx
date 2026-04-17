@@ -6,12 +6,11 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 
 const titles: Record<string, string> = {
-  "/app": "Dashboard",
+  "/app": "Tableau de bord",
   "/app/chat": "Chat IA",
-  "/app/analytics": "Analytics",
-  "/app/incidents": "Incidents",
-  "/app/settings": "Settings",
-  "/app/admin": "Admin",
+  "/app/historique": "Historique",
+  "/app/settings": "Paramètres",
+  "/app/admin": "Administration",
 };
 
 export function AppLayout() {
@@ -35,7 +34,7 @@ export function AppLayout() {
               <div className="relative">
                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                 <Input
-                  placeholder="Search incidents, services, conversations…"
+                  placeholder="Rechercher incidents, services, conversations…"
                   className="pl-9 h-9 bg-surface/60 border-border/60 focus-visible:ring-primary/50"
                 />
                 <kbd className="absolute right-2 top-1/2 -translate-y-1/2 text-[10px] text-muted-foreground border border-border/60 px-1.5 py-0.5 rounded">⌘K</kbd>
@@ -43,7 +42,7 @@ export function AppLayout() {
             </div>
 
             <Button asChild variant="ghost" size="sm" className="gap-1.5 text-primary hover:text-primary hover:bg-primary/10">
-              <Link to="/app/chat"><Sparkles className="h-4 w-4" />Ask AI</Link>
+              <Link to="/app/chat"><Sparkles className="h-4 w-4" />Demander à l'IA</Link>
             </Button>
             <button className="relative h-9 w-9 rounded-lg flex items-center justify-center hover:bg-surface transition-colors">
               <Bell className="h-4 w-4 text-muted-foreground" />

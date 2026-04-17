@@ -25,10 +25,10 @@ const rand = (seed: number) => {
 };
 
 export const KPIS = [
-  { label: "Correlations Today", value: 247, delta: 18, trend: "up" as const, sparkline: [120, 140, 130, 180, 200, 210, 247] },
-  { label: "Customers Impacted", value: 12430, delta: 3, trend: "up" as const, sparkline: [11000, 11200, 11800, 12000, 12100, 12300, 12430] },
-  { label: "Avg Resolution Time", value: 14, suffix: "min", delta: -62, trend: "down" as const, good: true, sparkline: [40, 35, 28, 22, 18, 16, 14] },
-  { label: "Open Critical Incidents", value: 8, delta: -40, trend: "down" as const, good: true, sparkline: [18, 16, 14, 12, 10, 9, 8] },
+  { label: "Corrélations aujourd'hui", value: 247, delta: 18, trend: "up" as const, sparkline: [120, 140, 130, 180, 200, 210, 247] },
+  { label: "Clients impactés", value: 12430, delta: 3, trend: "up" as const, sparkline: [11000, 11200, 11800, 12000, 12100, 12300, 12430] },
+  { label: "Temps moyen de résolution", value: 14, suffix: "min", delta: -62, trend: "down" as const, good: true, sparkline: [40, 35, 28, 22, 18, 16, 14] },
+  { label: "Incidents critiques ouverts", value: 8, delta: -40, trend: "down" as const, good: true, sparkline: [18, 16, 14, 12, 10, 9, 8] },
 ];
 
 export const INCIDENT_VOLUME = Array.from({ length: 30 }, (_, i) => {
@@ -46,9 +46,9 @@ export const INCIDENT_VOLUME = Array.from({ length: 30 }, (_, i) => {
 });
 
 export const SOURCE_DISTRIBUTION = [
-  { name: "Dynatrace Only", value: 45, color: "hsl(277 100% 50%)" },
-  { name: "Salesforce Only", value: 25, color: "hsl(16 67% 52%)" },
-  { name: "Mixed Correlation", value: 30, color: "hsl(173 80% 50%)" },
+  { name: "Dynatrace uniquement", value: 45, color: "hsl(277 100% 50%)" },
+  { name: "Salesforce uniquement", value: 25, color: "hsl(16 67% 52%)" },
+  { name: "Corrélation mixte", value: 30, color: "hsl(173 80% 50%)" },
 ];
 
 export const TOP_SERVICES = [
@@ -123,10 +123,10 @@ export const INCIDENTS: Incident[] = Array.from({ length: 24 }, (_, i) => {
 });
 
 export const SUGGESTED_PROMPTS = [
-  "What caused the 4G outage in Casablanca yesterday?",
-  "Which services had the most complaints this week?",
-  "Show me correlation between network events and tickets",
-  "Predict customer impact of the current VoLTE degradation",
+  "Quelle est la cause de la panne 4G à Casablanca hier ?",
+  "Quels services ont eu le plus de plaintes cette semaine ?",
+  "Montrez-moi la corrélation entre événements réseau et tickets",
+  "Prédisez l'impact client de la dégradation VoLTE actuelle",
 ];
 
 export const MOCK_CONVERSATIONS = [

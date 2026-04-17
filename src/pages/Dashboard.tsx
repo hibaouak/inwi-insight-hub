@@ -25,12 +25,12 @@ export default function Dashboard() {
     <div className="p-6 space-y-6 max-w-[1600px] mx-auto">
       <div className="flex items-end justify-between flex-wrap gap-3">
         <div>
-          <h1 className="text-2xl font-bold tracking-tight">Operations Overview</h1>
-          <p className="text-sm text-muted-foreground mt-1">Real-time correlation between Dynatrace and Salesforce — last 24 hours</p>
+          <h1 className="text-2xl font-bold tracking-tight">Vue d'ensemble des opérations</h1>
+          <p className="text-sm text-muted-foreground mt-1">Corrélation en temps réel entre Dynatrace et Salesforce — dernières 24 heures</p>
         </div>
         <div className="flex items-center gap-2 text-xs text-muted-foreground">
           <span className="h-2 w-2 rounded-full bg-success animate-pulse-glow" />
-          Live · synced 4s ago
+          En direct · synchronisé il y a 4s
         </div>
       </div>
 
@@ -41,13 +41,13 @@ export default function Dashboard() {
 
       {/* Big chart */}
       <ChartCard
-        title="Incident Volume & Resolution Rate"
-        subtitle="Last 30 days · spikes flagged as anomalies"
+        title="Volume d'incidents et taux de résolution"
+        subtitle="30 derniers jours · pics signalés comme anomalies"
         delay={0.1}
         action={
           <div className="flex items-center gap-3 text-[10px] text-muted-foreground">
             <span className="flex items-center gap-1"><span className="h-2 w-2 rounded-sm bg-primary" />Incidents</span>
-            <span className="flex items-center gap-1"><span className="h-2 w-2 rounded-sm bg-accent" />Resolution %</span>
+            <span className="flex items-center gap-1"><span className="h-2 w-2 rounded-sm bg-accent" />Résolution %</span>
           </div>
         }
       >
@@ -73,7 +73,7 @@ export default function Dashboard() {
 
       {/* Row of 3 charts */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-        <ChartCard title="Source Distribution" subtitle="Where correlations originate" delay={0.15}>
+        <ChartCard title="Distribution des sources" subtitle="Origine des corrélations" delay={0.15}>
           <div className="h-60 relative">
             <ResponsiveContainer>
               <PieChart>
@@ -85,7 +85,7 @@ export default function Dashboard() {
             </ResponsiveContainer>
             <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
               <div className="text-2xl font-bold">747</div>
-              <div className="text-[10px] uppercase tracking-wider text-muted-foreground">Total today</div>
+              <div className="text-[10px] uppercase tracking-wider text-muted-foreground">Total aujourd'hui</div>
             </div>
           </div>
           <div className="space-y-1.5 mt-3">
@@ -101,7 +101,7 @@ export default function Dashboard() {
           </div>
         </ChartCard>
 
-        <ChartCard title="Top Impacted Services" subtitle="Click to drill down" delay={0.2}>
+        <ChartCard title="Services les plus impactés" subtitle="Cliquer pour explorer" delay={0.2}>
           <div className="h-72">
             <ResponsiveContainer>
               <BarChart data={TOP_SERVICES} layout="vertical" margin={{ top: 0, right: 30, left: 0, bottom: 0 }}>
@@ -121,7 +121,7 @@ export default function Dashboard() {
           </div>
         </ChartCard>
 
-        <ChartCard title="Resolution Time Distribution" subtitle="By bucket · last 7 days" delay={0.25}>
+        <ChartCard title="Distribution du temps de résolution" subtitle="Par tranche · 7 derniers jours" delay={0.25}>
           <div className="h-72">
             <ResponsiveContainer>
               <BarChart data={RESOLUTION_DIST} margin={{ top: 10, right: 0, left: -20, bottom: 0 }}>
@@ -144,11 +144,11 @@ export default function Dashboard() {
 
       {/* Topology + heatmap */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-        <ChartCard title="Network Topology Map" subtitle="Service health & active correlations" className="lg:col-span-2 min-h-[380px]" delay={0.3}>
+        <ChartCard title="Carte de topologie réseau" subtitle="Santé des services & corrélations actives" className="lg:col-span-2 min-h-[380px]" delay={0.3}>
           <NetworkTopology />
         </ChartCard>
 
-        <ChartCard title="Customer Impact Heatmap" subtitle="52 weeks · daily incident count" delay={0.35}>
+        <ChartCard title="Carte de chaleur d'impact client" subtitle="52 semaines · incidents journaliers" delay={0.35}>
           <ImpactHeatmap />
         </ChartCard>
       </div>
