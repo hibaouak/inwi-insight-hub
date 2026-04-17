@@ -1,105 +1,133 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-/* Definition of the design system. All colors, gradients, fonts, etc should be defined here. 
-All colors MUST be HSL.
-*/
+/* inwi·IA v2 — Dark-first design system. All colors HSL. */
 
 @layer base {
   :root {
-    --background: 0 0% 100%;
-    --foreground: 222.2 84% 4.9%;
+    /* Brand */
+    --background: 240 33% 7%;          /* #0D0D1A */
+    --foreground: 0 0% 100%;
 
-    --card: 0 0% 100%;
-    --card-foreground: 222.2 84% 4.9%;
+    --surface: 240 36% 12%;            /* #13132A */
+    --surface-elevated: 240 35% 16%;   /* #1A1A35 */
 
-    --popover: 0 0% 100%;
-    --popover-foreground: 222.2 84% 4.9%;
+    --card: 240 36% 12%;
+    --card-foreground: 0 0% 100%;
 
-    --primary: 222.2 47.4% 11.2%;
-    --primary-foreground: 210 40% 98%;
+    --popover: 240 36% 12%;
+    --popover-foreground: 0 0% 100%;
 
-    --secondary: 210 40% 96.1%;
-    --secondary-foreground: 222.2 47.4% 11.2%;
+    --primary: 277 100% 50%;           /* #A100FF */
+    --primary-foreground: 0 0% 100%;
+    --primary-glow: 277 100% 65%;
+    --primary-deep: 278 100% 40%;      /* #7B00CC */
 
-    --muted: 210 40% 96.1%;
-    --muted-foreground: 215.4 16.3% 46.9%;
+    --secondary: 240 35% 16%;
+    --secondary-foreground: 0 0% 100%;
 
-    --accent: 210 40% 96.1%;
-    --accent-foreground: 222.2 47.4% 11.2%;
+    --muted: 240 30% 18%;
+    --muted-foreground: 240 17% 67%;   /* #9999BB */
 
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 210 40% 98%;
+    --accent: 16 67% 52%;              /* #D85A30 */
+    --accent-foreground: 0 0% 100%;
 
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
-    --ring: 222.2 84% 4.9%;
+    --success: 158 100% 42%;           /* #00D68F */
+    --warning: 43 100% 50%;            /* #FFB800 */
+    --danger: 0 100% 62%;              /* #FF3D71 */
 
-    --radius: 0.5rem;
+    --destructive: 0 100% 62%;
+    --destructive-foreground: 0 0% 100%;
 
-    --sidebar-background: 0 0% 98%;
+    --border: 240 28% 23%;             /* #2A2A4A */
+    --input: 240 28% 23%;
+    --ring: 277 100% 50%;
 
-    --sidebar-foreground: 240 5.3% 26.1%;
+    --radius: 1rem;
 
-    --sidebar-primary: 240 5.9% 10%;
+    /* Sidebar */
+    --sidebar-background: 240 38% 9%;
+    --sidebar-foreground: 240 17% 80%;
+    --sidebar-primary: 277 100% 50%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 240 35% 14%;
+    --sidebar-accent-foreground: 0 0% 100%;
+    --sidebar-border: 240 28% 18%;
+    --sidebar-ring: 277 100% 50%;
 
-    --sidebar-primary-foreground: 0 0% 98%;
+    /* Gradients */
+    --gradient-hero: linear-gradient(135deg, hsl(240 33% 7%) 0%, hsl(278 60% 12%) 60%, hsl(277 80% 18%) 100%);
+    --gradient-primary: linear-gradient(135deg, hsl(277 100% 50%) 0%, hsl(278 100% 40%) 100%);
+    --gradient-text: linear-gradient(135deg, hsl(0 0% 100%) 0%, hsl(277 100% 75%) 100%);
+    --gradient-card: linear-gradient(135deg, hsl(240 36% 12% / 0.8) 0%, hsl(240 35% 16% / 0.6) 100%);
 
-    --sidebar-accent: 240 4.8% 95.9%;
-
-    --sidebar-accent-foreground: 240 5.9% 10%;
-
-    --sidebar-border: 220 13% 91%;
-
-    --sidebar-ring: 217.2 91.2% 59.8%;
+    /* Shadows / glows */
+    --glow-primary: 0 0 32px hsl(277 100% 50% / 0.35);
+    --glow-soft: 0 0 16px hsl(277 100% 50% / 0.2);
+    --shadow-card: 0 8px 32px hsl(240 50% 2% / 0.5);
   }
 
   .dark {
-    --background: 222.2 84% 4.9%;
-    --foreground: 210 40% 98%;
-
-    --card: 222.2 84% 4.9%;
-    --card-foreground: 210 40% 98%;
-
-    --popover: 222.2 84% 4.9%;
-    --popover-foreground: 210 40% 98%;
-
-    --primary: 210 40% 98%;
-    --primary-foreground: 222.2 47.4% 11.2%;
-
-    --secondary: 217.2 32.6% 17.5%;
-    --secondary-foreground: 210 40% 98%;
-
-    --muted: 217.2 32.6% 17.5%;
-    --muted-foreground: 215 20.2% 65.1%;
-
-    --accent: 217.2 32.6% 17.5%;
-    --accent-foreground: 210 40% 98%;
-
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 210 40% 98%;
-
-    --border: 217.2 32.6% 17.5%;
-    --input: 217.2 32.6% 17.5%;
-    --ring: 212.7 26.8% 83.9%;
-    --sidebar-background: 240 5.9% 10%;
-    --sidebar-foreground: 240 4.8% 95.9%;
-    --sidebar-primary: 224.3 76.3% 48%;
-    --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 240 3.7% 15.9%;
-    --sidebar-accent-foreground: 240 4.8% 95.9%;
-    --sidebar-border: 240 3.7% 15.9%;
-    --sidebar-ring: 217.2 91.2% 59.8%;
+    /* same — dark is default */
   }
 }
 
 @layer base {
-  * {
-    @apply border-border;
+  * { @apply border-border; }
+  html { font-family: 'Inter', system-ui, sans-serif; }
+  body {
+    @apply bg-background text-foreground antialiased;
+    background-image:
+      radial-gradient(ellipse 80% 50% at 50% -20%, hsl(277 100% 30% / 0.25), transparent),
+      radial-gradient(ellipse 60% 40% at 100% 100%, hsl(278 100% 25% / 0.15), transparent);
+    background-attachment: fixed;
   }
 
-  body {
-    @apply bg-background text-foreground;
+  ::selection { background: hsl(var(--primary) / 0.4); color: white; }
+
+  /* Scrollbar */
+  ::-webkit-scrollbar { width: 10px; height: 10px; }
+  ::-webkit-scrollbar-track { background: hsl(var(--background)); }
+  ::-webkit-scrollbar-thumb { background: hsl(var(--border)); border-radius: 8px; }
+  ::-webkit-scrollbar-thumb:hover { background: hsl(var(--primary) / 0.5); }
+}
+
+@layer components {
+  .glass {
+    background: hsl(0 0% 100% / 0.04);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid hsl(var(--border));
+  }
+  .glass-strong {
+    background: hsl(240 36% 12% / 0.7);
+    backdrop-filter: blur(24px);
+    -webkit-backdrop-filter: blur(24px);
+    border: 1px solid hsl(var(--border));
+  }
+  .glow-hover {
+    transition: box-shadow .3s ease, border-color .3s ease, transform .3s ease;
+  }
+  .glow-hover:hover {
+    border-color: hsl(var(--primary) / 0.6);
+    box-shadow: var(--glow-primary);
+  }
+  .text-gradient {
+    background: var(--gradient-text);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+  .bg-gradient-primary { background: var(--gradient-primary); }
+  .bg-gradient-hero { background: var(--gradient-hero); }
+  .grid-bg {
+    background-image:
+      linear-gradient(hsl(var(--border) / 0.3) 1px, transparent 1px),
+      linear-gradient(90deg, hsl(var(--border) / 0.3) 1px, transparent 1px);
+    background-size: 48px 48px;
+    mask-image: radial-gradient(ellipse 70% 60% at 50% 40%, black, transparent);
   }
 }
