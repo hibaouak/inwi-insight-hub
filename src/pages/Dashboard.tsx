@@ -1,3 +1,6 @@
+"use client";
+
+import { useMemo } from "react";
 import { KpiCard } from "@/components/dashboard/KpiCard";
 import { ChartCard } from "@/components/dashboard/ChartCard";
 import { NetworkTopology } from "@/components/dashboard/NetworkTopology";
@@ -148,13 +151,6 @@ export default function Dashboard() {
           <NetworkTopology />
         </ChartCard>
 
-        <ChartCard title="Carte de chaleur d'impact client" subtitle="52 semaines · incidents journaliers" delay={0.35}>
-          <ImpactHeatmap />
-        </ChartCard>
-      </div>
-
-      {/* Incidents */}
-      <IncidentsTable limit={8} />
     </div>
   );
 }
