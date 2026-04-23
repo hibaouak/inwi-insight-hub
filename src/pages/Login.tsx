@@ -7,10 +7,12 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Logo } from "@/components/Logo";
 import { useAuth } from "@/contexts/AuthContext";
+import { useTranslation } from "react-i18next";
 
 export default function Login() {
-  const { login } = useAuth();
+  const { login, user } = useAuth();
   const navigate = useNavigate();
+  const { t } = useTranslation();
   const [form, setForm] = useState({ email: "", password: "" });
   const [showPwd, setShowPwd] = useState(false);
   const [error, setError] = useState("");
@@ -22,12 +24,19 @@ export default function Login() {
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
-    if (!form.email.trim() || !form.password) return setError("Please fill in all fields.");
+    if (!form.email.trim() || !form.password) return setError(t("auth.fillAllFields"));
     setLoading(true);
     const ok = await login(form.email.trim(), form.password);
     setLoading(false);
-    if (!ok) return setError("Invalid email or password.");
-    navigate("/app");
+    if (!ok) return setError(t("auth.invalidCredentials"));
+    // Role-based redirect after login
+    const stored = localStorage.getItem("inwi_user");
+    const loggedUser = stored ? JSON.parse(stored) : null;
+    if (loggedUser?.role === "technician") {
+      navigate("/app/chat");
+    } else {
+      navigate("/app");
+    }
   };
 
   return (
@@ -44,21 +53,21 @@ export default function Login() {
         <div className="glass-strong rounded-2xl p-8 border border-border/60 shadow-glow-soft">
           <div className="flex flex-col items-center mb-8">
             <Logo />
-            <p className="text-sm text-muted-foreground mt-3">AI-powered telecom operations</p>
+            <p className="text-sm text-muted-foreground mt-3">{t("common.tagline")}</p>
           </div>
 
           <div className="flex items-center gap-2 mb-6">
             <Sparkles className="h-4 w-4 text-primary" />
-            <h1 className="text-lg font-semibold">Sign in to inwi·IA</h1>
+            <h1 className="text-lg font-semibold">{t("auth.signInTo")}</h1>
           </div>
 
           <form onSubmit={submit} className="space-y-4">
             <div className="space-y-1.5">
-              <Label htmlFor="email" className="text-xs text-muted-foreground">Email address</Label>
+              <Label htmlFor="email" className="text-xs text-muted-foreground">{t("auth.email")}</Label>
               <Input
                 id="email"
                 type="email"
-                placeholder="you@inwi.ma"
+                placeholder="vous@inwi.ma"
                 value={form.email}
                 onChange={set("email")}
                 className="bg-surface/60 border-border/60 focus-visible:ring-primary/50"
@@ -67,12 +76,12 @@ export default function Login() {
             </div>
 
             <div className="space-y-1.5">
-              <Label htmlFor="password" className="text-xs text-muted-foreground">Password</Label>
+              <Label htmlFor="password" className="text-xs text-muted-foreground">{t("auth.password")}</Label>
               <div className="relative">
                 <Input
                   id="password"
                   type={showPwd ? "text" : "password"}
-                  placeholder="Your password"
+                  placeholder="Votre mot de passe"
                   value={form.password}
                   onChange={set("password")}
                   className="bg-surface/60 border-border/60 focus-visible:ring-primary/50 pr-10"
@@ -99,14 +108,14 @@ export default function Login() {
               className="w-full bg-gradient-primary hover:opacity-90 shadow-glow-soft"
               disabled={loading}
             >
-              {loading ? "Signing in…" : <>Sign in <ArrowRight className="ml-2 h-4 w-4" /></>}
+              {loading ? t("auth.signingIn") : <>{t("auth.signIn")} <ArrowRight className="ml-2 h-4 w-4" /></>}
             </Button>
           </form>
 
           <p className="text-center text-xs text-muted-foreground mt-6">
-            Don't have an account?{" "}
+            {t("auth.noAccount")}{" "}
             <Link to="/" className="text-primary hover:text-primary/80 font-medium transition-colors">
-              Create one
+              {t("auth.createAccount")}
             </Link>
           </p>
         </div>

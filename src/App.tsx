@@ -1,16 +1,18 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Route, Routes, Navigate } from "react-router-dom";
+import { ThemeProvider } from "next-themes";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { AuthProvider, useAuth } from "@/contexts/AuthContext";
+import "@/i18n";
 import Register from "./pages/Register";
 import Login from "./pages/Login";
 import Dashboard from "./pages/Dashboard";
 import ChatIA from "./pages/ChatIA";
 import ChatHistorique from "./pages/ChatHistorique";
 import Settings from "./pages/Settings";
-import Placeholder from "./pages/Placeholder";
+import Admin from "./pages/Admin";
 import NotFound from "./pages/NotFound";
 import { AppLayout } from "./components/AppLayout";
 
@@ -21,9 +23,24 @@ function ProtectedRoute({ children }: { children: React.ReactNode }) {
   return isAuthenticated ? <>{children}</> : <Navigate to="/" replace />;
 }
 
+function AdminRoute({ children }: { children: React.ReactNode }) {
+  const { isAuthenticated, isAdmin } = useAuth();
+  if (!isAuthenticated) return <Navigate to="/" replace />;
+  if (!isAdmin) return <Navigate to="/app/chat" replace />;
+  return <>{children}</>;
+}
+
+function TechnicianRoute({ children }: { children: React.ReactNode }) {
+  const { isAuthenticated, isAdmin } = useAuth();
+  if (!isAuthenticated) return <Navigate to="/" replace />;
+  if (isAdmin) return <Navigate to="/app" replace />;
+  return <>{children}</>;
+}
+
 function PublicRoute({ children }: { children: React.ReactNode }) {
-  const { isAuthenticated } = useAuth();
-  return isAuthenticated ? <Navigate to="/app" replace /> : <>{children}</>;
+  const { isAuthenticated, isAdmin } = useAuth();
+  if (!isAuthenticated) return <>{children}</>;
+  return <Navigate to={isAdmin ? "/app" : "/app/chat"} replace />;
 }
 
 function AppRoutes() {
@@ -35,11 +52,13 @@ function AppRoutes() {
         path="/app"
         element={<ProtectedRoute><AppLayout /></ProtectedRoute>}
       >
-        <Route index element={<Dashboard />} />
-        <Route path="chat" element={<ChatIA />} />
-        <Route path="historique" element={<ChatHistorique />} />
-        <Route path="settings" element={<Settings />} />
-        <Route path="admin" element={<Placeholder title="Admin" />} />
+        {/* Admin-only routes */}
+        <Route index element={<AdminRoute><Dashboard /></AdminRoute>} />
+        <Route path="historique" element={<AdminRoute><ChatHistorique /></AdminRoute>} />
+        <Route path="settings" element={<AdminRoute><Settings /></AdminRoute>} />
+        <Route path="admin" element={<AdminRoute><Admin /></AdminRoute>} />
+        {/* Shared: both admin and technician */}
+        <Route path="chat" element={<ProtectedRoute><ChatIA /></ProtectedRoute>} />
       </Route>
       <Route path="*" element={<NotFound />} />
     </Routes>
@@ -47,17 +66,19 @@ function AppRoutes() {
 }
 
 const App = () => (
-  <QueryClientProvider client={queryClient}>
-    <TooltipProvider>
-      <Toaster />
-      <Sonner />
-      <BrowserRouter>
-        <AuthProvider>
-          <AppRoutes />
-        </AuthProvider>
-      </BrowserRouter>
-    </TooltipProvider>
-  </QueryClientProvider>
+  <ThemeProvider attribute="class" defaultTheme="dark" enableSystem={false}>
+    <QueryClientProvider client={queryClient}>
+      <TooltipProvider>
+        <Toaster />
+        <Sonner />
+        <BrowserRouter>
+          <AuthProvider>
+            <AppRoutes />
+          </AuthProvider>
+        </BrowserRouter>
+      </TooltipProvider>
+    </QueryClientProvider>
+  </ThemeProvider>
 );
 
 export default App;

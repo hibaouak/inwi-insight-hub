@@ -4,16 +4,78 @@
 @tailwind components;
 @tailwind utilities;
 
-/* inwi·IA v2 — Dark-first design system. All colors HSL. */
+/* inwi·IA v2 — Design system with dark/light modes. All colors HSL. */
 
 @layer base {
   :root {
-    /* Brand */
-    --background: 240 33% 7%;          /* #0D0D1A */
+    /* Light mode defaults */
+    --background: 240 20% 97%;
+    --foreground: 240 33% 10%;
+
+    --surface: 240 20% 94%;
+    --surface-elevated: 0 0% 100%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 240 33% 10%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 240 33% 10%;
+
+    --primary: 277 100% 45%;
+    --primary-foreground: 0 0% 100%;
+    --primary-glow: 277 100% 55%;
+    --primary-deep: 278 100% 35%;
+
+    --secondary: 240 15% 90%;
+    --secondary-foreground: 240 33% 10%;
+
+    --muted: 240 15% 92%;
+    --muted-foreground: 240 10% 45%;
+
+    --accent: 16 67% 52%;
+    --accent-foreground: 0 0% 100%;
+
+    --success: 158 80% 35%;
+    --warning: 43 100% 42%;
+    --danger: 0 85% 55%;
+
+    --destructive: 0 85% 55%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 240 15% 85%;
+    --input: 240 15% 85%;
+    --ring: 277 100% 45%;
+
+    --radius: 1rem;
+
+    /* Sidebar */
+    --sidebar-background: 0 0% 98%;
+    --sidebar-foreground: 240 20% 25%;
+    --sidebar-primary: 277 100% 45%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 240 15% 93%;
+    --sidebar-accent-foreground: 240 33% 10%;
+    --sidebar-border: 240 15% 88%;
+    --sidebar-ring: 277 100% 45%;
+
+    /* Gradients */
+    --gradient-hero: linear-gradient(135deg, hsl(240 20% 97%) 0%, hsl(278 40% 94%) 60%, hsl(277 50% 92%) 100%);
+    --gradient-primary: linear-gradient(135deg, hsl(277 100% 45%) 0%, hsl(278 100% 35%) 100%);
+    --gradient-text: linear-gradient(135deg, hsl(240 33% 10%) 0%, hsl(277 100% 50%) 100%);
+    --gradient-card: linear-gradient(135deg, hsl(0 0% 100% / 0.9) 0%, hsl(240 20% 97% / 0.8) 100%);
+
+    /* Shadows / glows */
+    --glow-primary: 0 0 32px hsl(277 100% 45% / 0.25);
+    --glow-soft: 0 0 16px hsl(277 100% 45% / 0.15);
+    --shadow-card: 0 8px 32px hsl(240 20% 60% / 0.15);
+  }
+
+  .dark {
+    --background: 240 33% 7%;
     --foreground: 0 0% 100%;
 
-    --surface: 240 36% 12%;            /* #13132A */
-    --surface-elevated: 240 35% 16%;   /* #1A1A35 */
+    --surface: 240 36% 12%;
+    --surface-elevated: 240 35% 16%;
 
     --card: 240 36% 12%;
     --card-foreground: 0 0% 100%;
@@ -21,34 +83,31 @@
     --popover: 240 36% 12%;
     --popover-foreground: 0 0% 100%;
 
-    --primary: 277 100% 50%;           /* #A100FF */
+    --primary: 277 100% 50%;
     --primary-foreground: 0 0% 100%;
     --primary-glow: 277 100% 65%;
-    --primary-deep: 278 100% 40%;      /* #7B00CC */
+    --primary-deep: 278 100% 40%;
 
     --secondary: 240 35% 16%;
     --secondary-foreground: 0 0% 100%;
 
     --muted: 240 30% 18%;
-    --muted-foreground: 240 17% 67%;   /* #9999BB */
+    --muted-foreground: 240 17% 67%;
 
-    --accent: 16 67% 52%;              /* #D85A30 */
+    --accent: 16 67% 52%;
     --accent-foreground: 0 0% 100%;
 
-    --success: 158 100% 42%;           /* #00D68F */
-    --warning: 43 100% 50%;            /* #FFB800 */
-    --danger: 0 100% 62%;              /* #FF3D71 */
+    --success: 158 100% 42%;
+    --warning: 43 100% 50%;
+    --danger: 0 100% 62%;
 
     --destructive: 0 100% 62%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 240 28% 23%;             /* #2A2A4A */
+    --border: 240 28% 23%;
     --input: 240 28% 23%;
     --ring: 277 100% 50%;
 
-    --radius: 1rem;
-
-    /* Sidebar */
     --sidebar-background: 240 38% 9%;
     --sidebar-foreground: 240 17% 80%;
     --sidebar-primary: 277 100% 50%;
@@ -58,20 +117,14 @@
     --sidebar-border: 240 28% 18%;
     --sidebar-ring: 277 100% 50%;
 
-    /* Gradients */
     --gradient-hero: linear-gradient(135deg, hsl(240 33% 7%) 0%, hsl(278 60% 12%) 60%, hsl(277 80% 18%) 100%);
     --gradient-primary: linear-gradient(135deg, hsl(277 100% 50%) 0%, hsl(278 100% 40%) 100%);
     --gradient-text: linear-gradient(135deg, hsl(0 0% 100%) 0%, hsl(277 100% 75%) 100%);
     --gradient-card: linear-gradient(135deg, hsl(240 36% 12% / 0.8) 0%, hsl(240 35% 16% / 0.6) 100%);
 
-    /* Shadows / glows */
     --glow-primary: 0 0 32px hsl(277 100% 50% / 0.35);
     --glow-soft: 0 0 16px hsl(277 100% 50% / 0.2);
     --shadow-card: 0 8px 32px hsl(240 50% 2% / 0.5);
-  }
-
-  .dark {
-    /* same — dark is default */
   }
 }
 
@@ -81,9 +134,15 @@
   body {
     @apply bg-background text-foreground antialiased;
     background-image:
+      radial-gradient(ellipse 80% 50% at 50% -20%, hsl(277 100% 30% / 0.15), transparent),
+      radial-gradient(ellipse 60% 40% at 100% 100%, hsl(278 100% 25% / 0.10), transparent);
+    background-attachment: fixed;
+  }
+
+  .dark body {
+    background-image:
       radial-gradient(ellipse 80% 50% at 50% -20%, hsl(277 100% 30% / 0.25), transparent),
       radial-gradient(ellipse 60% 40% at 100% 100%, hsl(278 100% 25% / 0.15), transparent);
-    background-attachment: fixed;
   }
 
   ::selection { background: hsl(var(--primary) / 0.4); color: white; }
@@ -95,18 +154,31 @@
   ::-webkit-scrollbar-thumb:hover { background: hsl(var(--primary) / 0.5); }
 }
 
+/* RTL support for Arabic */
+[dir="rtl"] {
+  text-align: right;
+}
+[dir="rtl"] .ml-auto { margin-left: unset; margin-right: auto; }
+[dir="rtl"] .mr-auto { margin-right: unset; margin-left: auto; }
+
 @layer components {
   .glass {
-    background: hsl(0 0% 100% / 0.04);
+    background: hsl(0 0% 100% / 0.06);
     backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
     border: 1px solid hsl(var(--border));
   }
+  .dark .glass {
+    background: hsl(0 0% 100% / 0.04);
+  }
   .glass-strong {
-    background: hsl(240 36% 12% / 0.7);
+    background: hsl(0 0% 100% / 0.8);
     backdrop-filter: blur(24px);
     -webkit-backdrop-filter: blur(24px);
     border: 1px solid hsl(var(--border));
+  }
+  .dark .glass-strong {
+    background: hsl(240 36% 12% / 0.7);
   }
   .glow-hover {
     transition: box-shadow .3s ease, border-color .3s ease, transform .3s ease;

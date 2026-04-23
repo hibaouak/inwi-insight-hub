@@ -6,31 +6,34 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Logo } from "@/components/Logo";
-import { useAuth } from "@/contexts/AuthContext";
+import { useAuth, UserRole } from "@/contexts/AuthContext";
+import { useTranslation } from "react-i18next";
 
 export default function Register() {
   const { register } = useAuth();
   const navigate = useNavigate();
-  const [form, setForm] = useState({ name: "", email: "", password: "", confirm: "" });
+  const { t } = useTranslation();
+  const [form, setForm] = useState({ name: "", email: "", password: "", confirm: "", role: "" as UserRole | "" });
   const [showPwd, setShowPwd] = useState(false);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
-  const set = (k: keyof typeof form) => (e: React.ChangeEvent<HTMLInputElement>) =>
+  const set = (k: keyof typeof form) => (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) =>
     setForm(f => ({ ...f, [k]: e.target.value }));
 
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
-    if (!form.name.trim()) return setError("Full name is required.");
-    if (!form.email.includes("@")) return setError("Enter a valid email.");
-    if (form.password.length < 6) return setError("Password must be at least 6 characters.");
-    if (form.password !== form.confirm) return setError("Passwords do not match.");
+    if (!form.name.trim()) return setError(t("auth.nameRequired"));
+    if (!form.email.includes("@")) return setError(t("auth.invalidEmail"));
+    if (form.password.length < 6) return setError(t("auth.passwordTooShort"));
+    if (form.password !== form.confirm) return setError(t("auth.passwordMismatch"));
+    if (!form.role) return setError(t("auth.selectRole"));
     setLoading(true);
-    const ok = await register(form.name.trim(), form.email.trim(), form.password);
+    const ok = await register(form.name.trim(), form.email.trim(), form.password, form.role as UserRole);
     setLoading(false);
-    if (!ok) return setError("An account with this email already exists.");
-    navigate("/app");
+    if (!ok) return setError(t("auth.emailExists"));
+    navigate(form.role === "technician" ? "/app/chat" : "/app");
   };
 
   return (
@@ -47,17 +50,17 @@ export default function Register() {
         <div className="glass-strong rounded-2xl p-8 border border-border/60 shadow-glow-soft">
           <div className="flex flex-col items-center mb-8">
             <Logo />
-            <p className="text-sm text-muted-foreground mt-3">AI-powered telecom operations</p>
+            <p className="text-sm text-muted-foreground mt-3">{t("common.tagline")}</p>
           </div>
 
           <div className="flex items-center gap-2 mb-6">
             <Sparkles className="h-4 w-4 text-primary" />
-            <h1 className="text-lg font-semibold">Create your account</h1>
+            <h1 className="text-lg font-semibold">{t("auth.createAccount")}</h1>
           </div>
 
           <form onSubmit={submit} className="space-y-4">
             <div className="space-y-1.5">
-              <Label htmlFor="name" className="text-xs text-muted-foreground">Full name</Label>
+              <Label htmlFor="name" className="text-xs text-muted-foreground">{t("auth.fullName")}</Label>
               <Input
                 id="name"
                 type="text"
@@ -70,11 +73,11 @@ export default function Register() {
             </div>
 
             <div className="space-y-1.5">
-              <Label htmlFor="email" className="text-xs text-muted-foreground">Email address</Label>
+              <Label htmlFor="email" className="text-xs text-muted-foreground">{t("auth.email")}</Label>
               <Input
                 id="email"
                 type="email"
-                placeholder="you@inwi.ma"
+                placeholder="vous@inwi.ma"
                 value={form.email}
                 onChange={set("email")}
                 className="bg-surface/60 border-border/60 focus-visible:ring-primary/50"
@@ -83,12 +86,27 @@ export default function Register() {
             </div>
 
             <div className="space-y-1.5">
-              <Label htmlFor="password" className="text-xs text-muted-foreground">Password</Label>
+              <Label htmlFor="role" className="text-xs text-muted-foreground">{t("auth.role")}</Label>
+              <select
+                id="role"
+                value={form.role}
+                onChange={set("role")}
+                className="w-full h-10 rounded-md border border-border/60 bg-surface/60 px-3 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/50"
+                required
+              >
+                <option value="" disabled>{t("auth.selectRole")}</option>
+                <option value="admin">{t("auth.roleAdmin")}</option>
+                <option value="technician">{t("auth.roleTechnician")}</option>
+              </select>
+            </div>
+
+            <div className="space-y-1.5">
+              <Label htmlFor="password" className="text-xs text-muted-foreground">{t("auth.password")}</Label>
               <div className="relative">
                 <Input
                   id="password"
                   type={showPwd ? "text" : "password"}
-                  placeholder="At least 6 characters"
+                  placeholder="6+ caractères"
                   value={form.password}
                   onChange={set("password")}
                   className="bg-surface/60 border-border/60 focus-visible:ring-primary/50 pr-10"
@@ -105,11 +123,11 @@ export default function Register() {
             </div>
 
             <div className="space-y-1.5">
-              <Label htmlFor="confirm" className="text-xs text-muted-foreground">Confirm password</Label>
+              <Label htmlFor="confirm" className="text-xs text-muted-foreground">{t("auth.confirmPassword")}</Label>
               <Input
                 id="confirm"
                 type={showPwd ? "text" : "password"}
-                placeholder="Repeat password"
+                placeholder="Répéter le mot de passe"
                 value={form.confirm}
                 onChange={set("confirm")}
                 className="bg-surface/60 border-border/60 focus-visible:ring-primary/50"
@@ -128,14 +146,14 @@ export default function Register() {
               className="w-full bg-gradient-primary hover:opacity-90 shadow-glow-soft"
               disabled={loading}
             >
-              {loading ? "Creating account…" : <>Create account <ArrowRight className="ml-2 h-4 w-4" /></>}
+              {loading ? t("auth.creatingAccount") : <>{t("auth.createAccount")} <ArrowRight className="ml-2 h-4 w-4" /></>}
             </Button>
           </form>
 
           <p className="text-center text-xs text-muted-foreground mt-6">
-            Already have an account?{" "}
+            {t("auth.alreadyAccount")}{" "}
             <Link to="/login" className="text-primary hover:text-primary/80 font-medium transition-colors">
-              Sign in
+              {t("auth.signIn")}
             </Link>
           </p>
         </div>

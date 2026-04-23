@@ -7,31 +7,39 @@ import {
 import { Logo } from "./Logo";
 import { cn } from "@/lib/utils";
 import { useAuth } from "@/contexts/AuthContext";
-
-const mainItems = [
-  { title: "Tableau de bord", url: "/app", icon: LayoutDashboard },
-  { title: "Chat IA", url: "/app/chat", icon: MessageSquare, badge: "IA" },
-  { title: "Historique", url: "/app/historique", icon: History },
-];
-
-const bottomItems = [
-  { title: "Paramètres", url: "/app/settings", icon: Settings },
-  { title: "Administration", url: "/app/admin", icon: Shield },
-];
+import { useTranslation } from "react-i18next";
 
 export function AppSidebar() {
   const { state } = useSidebar();
   const collapsed = state === "collapsed";
   const { pathname } = useLocation();
-  const { user, logout } = useAuth();
+  const { user, logout, isAdmin } = useAuth();
   const navigate = useNavigate();
+  const { t } = useTranslation();
+
+  const adminItems = [
+    { title: t("nav.dashboard"), url: "/app", icon: LayoutDashboard },
+    { title: t("nav.chatIA"), url: "/app/chat", icon: MessageSquare, badge: "IA" },
+    { title: t("nav.history"), url: "/app/historique", icon: History },
+  ];
+
+  const technicianItems = [
+    { title: t("nav.chatIA"), url: "/app/chat", icon: MessageSquare, badge: "IA" },
+  ];
+
+  const mainItems = isAdmin ? adminItems : technicianItems;
+
+  const adminBottomItems = [
+    { title: t("nav.settings"), url: "/app/settings", icon: Settings },
+    { title: t("nav.admin"), url: "/app/admin", icon: Shield },
+  ];
 
   const handleLogout = () => {
     logout();
     navigate("/");
   };
 
-  const renderItem = (item: typeof mainItems[number]) => {
+  const renderItem = (item: { title: string; url: string; icon: React.ElementType; badge?: string }) => {
     const active = pathname === item.url || (item.url !== "/app" && pathname.startsWith(item.url));
     return (
       <SidebarMenuItem key={item.url}>
@@ -76,7 +84,7 @@ export function AppSidebar() {
         <SidebarGroup>
           {!collapsed && (
             <SidebarGroupLabel className="text-[10px] uppercase tracking-widest text-muted-foreground/60 px-2">
-              Espace de travail
+              {t("nav.workspace")}
             </SidebarGroupLabel>
           )}
           <SidebarGroupContent>
@@ -86,17 +94,21 @@ export function AppSidebar() {
       </SidebarContent>
 
       <SidebarFooter className="px-2 py-3 border-t border-sidebar-border">
-        <SidebarMenu className="gap-1">{bottomItems.map(renderItem)}</SidebarMenu>
+        {isAdmin && (
+          <SidebarMenu className="gap-1">{adminBottomItems.map(renderItem)}</SidebarMenu>
+        )}
 
         {!collapsed && user && (
           <div className="mt-3 px-2">
             <div className="flex items-center gap-2.5 mb-2">
-              <div className="h-8 w-8 rounded-full bg-gradient-primary flex items-center justify-center text-xs font-bold shrink-0">
+              <div className="h-8 w-8 rounded-full bg-gradient-primary flex items-center justify-center text-xs font-bold shrink-0 text-white">
                 {user.initials}
               </div>
               <div className="flex-1 min-w-0">
                 <div className="text-xs font-medium truncate">{user.name}</div>
-                <div className="text-[10px] text-muted-foreground truncate">{user.role}</div>
+                <div className="text-[10px] text-muted-foreground truncate capitalize">
+                  {user.role === "admin" ? t("auth.roleAdmin") : t("auth.roleTechnician")}
+                </div>
               </div>
             </div>
             <button
@@ -104,7 +116,7 @@ export function AppSidebar() {
               className="w-full flex items-center gap-2 px-2 py-1.5 rounded-lg text-xs text-muted-foreground hover:text-danger hover:bg-danger/10 transition-colors"
             >
               <LogOut className="h-3.5 w-3.5" />
-              Déconnexion
+              {t("common.logout")}
             </button>
           </div>
         )}
@@ -112,7 +124,7 @@ export function AppSidebar() {
         {collapsed && (
           <SidebarMenu className="gap-1 mt-1">
             <SidebarMenuItem>
-              <SidebarMenuButton tooltip="Déconnexion" onClick={handleLogout}>
+              <SidebarMenuButton tooltip={t("common.logout")} onClick={handleLogout}>
                 <LogOut className="h-[18px] w-[18px] text-muted-foreground hover:text-danger" />
               </SidebarMenuButton>
             </SidebarMenuItem>
