@@ -17,21 +17,20 @@ export function AppSidebar() {
   const navigate = useNavigate();
   const { t } = useTranslation();
 
-  const adminItems = [
+  const commonItems = [
     { title: t("nav.dashboard"), url: "/app", icon: LayoutDashboard },
     { title: t("nav.chatIA"), url: "/app/chat", icon: MessageSquare, badge: "IA" },
     { title: t("nav.history"), url: "/app/historique", icon: History },
   ];
 
-  const technicianItems = [
-    { title: t("nav.chatIA"), url: "/app/chat", icon: MessageSquare, badge: "IA" },
+  const adminItems = [
+    { title: t("nav.admin"), url: "/app/admin", icon: Shield },
   ];
 
-  const mainItems = isAdmin ? adminItems : technicianItems;
+  const mainItems = isAdmin ? [...commonItems, ...adminItems] : commonItems;
 
   const adminBottomItems = [
     { title: t("nav.settings"), url: "/app/settings", icon: Settings },
-    { title: t("nav.admin"), url: "/app/admin", icon: Shield },
   ];
 
   const handleLogout = () => {

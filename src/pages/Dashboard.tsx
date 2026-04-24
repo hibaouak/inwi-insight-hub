@@ -181,9 +181,9 @@ export default function Dashboard() {
         delay={0.1}
         action={
           <div className="flex items-center gap-4 text-[10px] text-muted-foreground">
-            <span className="flex items-center gap-1"><span className="h-2 w-2 rounded-sm bg-primary opacity-70" />DT incidents</span>
-            <span className="flex items-center gap-1"><span className="h-2 w-2 rounded-sm bg-accent opacity-70" />SF tickets</span>
-            <span className="flex items-center gap-1"><span className="h-2 w-2 rounded-sm bg-orange-400 opacity-70" />Corrélations</span>
+            <span className="flex items-center gap-1"><span className="h-2 w-2 rounded-sm" style={{ background: "#6366F1" }} />DT incidents</span>
+            <span className="flex items-center gap-1"><span className="h-2 w-2 rounded-sm" style={{ background: "#06B6D4" }} />SF tickets</span>
+            <span className="flex items-center gap-1"><span className="h-2 w-2 rounded-sm" style={{ background: "#F59E0B" }} />Corrélations</span>
           </div>
         }
       >
@@ -192,21 +192,21 @@ export default function Dashboard() {
             <ComposedChart data={INCIDENT_VOLUME} margin={{ top: 10, right: 8, left: -16, bottom: 0 }}>
               <defs>
                 <linearGradient id="gDT" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="0%" stopColor="hsl(var(--primary))" stopOpacity={0.4} />
-                  <stop offset="100%" stopColor="hsl(var(--primary))" stopOpacity={0} />
+                  <stop offset="0%" stopColor="#6366F1" stopOpacity={0.45} />
+                  <stop offset="100%" stopColor="#6366F1" stopOpacity={0} />
                 </linearGradient>
                 <linearGradient id="gSF" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="0%" stopColor="hsl(var(--accent))" stopOpacity={0.3} />
-                  <stop offset="100%" stopColor="hsl(var(--accent))" stopOpacity={0} />
+                  <stop offset="0%" stopColor="#06B6D4" stopOpacity={0.35} />
+                  <stop offset="100%" stopColor="#06B6D4" stopOpacity={0} />
                 </linearGradient>
               </defs>
               <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" opacity={0.3} />
               <XAxis dataKey="date" stroke="hsl(var(--muted-foreground))" fontSize={10} tickLine={false} axisLine={false} />
               <YAxis stroke="hsl(var(--muted-foreground))" fontSize={10} tickLine={false} axisLine={false} />
               <Tooltip {...tt} />
-              <Area type="monotone" dataKey="dynatrace" name="Incidents DT" stroke="hsl(var(--primary))" strokeWidth={2} fill="url(#gDT)" />
-              <Area type="monotone" dataKey="salesforce" name="Tickets SF"  stroke="hsl(var(--accent))"  strokeWidth={2} fill="url(#gSF)" />
-              <Line type="monotone" dataKey="correlations" name="Corrélations" stroke="#D85A30" strokeWidth={2} dot={{ r: 3, fill: "#D85A30" }} />
+              <Area type="monotone" dataKey="dynatrace" name="Incidents DT" stroke="#6366F1" strokeWidth={2.5} fill="url(#gDT)" />
+              <Area type="monotone" dataKey="salesforce" name="Tickets SF"  stroke="#06B6D4" strokeWidth={2.5} fill="url(#gSF)" />
+              <Line type="monotone" dataKey="correlations" name="Corrélations" stroke="#F59E0B" strokeWidth={2.5} dot={{ r: 3, fill: "#F59E0B" }} />
             </ComposedChart>
           </ResponsiveContainer>
         </div>

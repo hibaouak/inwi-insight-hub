@@ -10,7 +10,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useTranslation } from "react-i18next";
 
 export default function Login() {
-  const { login, user } = useAuth();
+  const { login } = useAuth();
   const navigate = useNavigate();
   const { t } = useTranslation();
   const [form, setForm] = useState({ email: "", password: "" });
@@ -29,14 +29,7 @@ export default function Login() {
     const ok = await login(form.email.trim(), form.password);
     setLoading(false);
     if (!ok) return setError(t("auth.invalidCredentials"));
-    // Role-based redirect after login
-    const stored = localStorage.getItem("inwi_user");
-    const loggedUser = stored ? JSON.parse(stored) : null;
-    if (loggedUser?.role === "technician") {
-      navigate("/app/chat");
-    } else {
-      navigate("/app");
-    }
+    navigate("/app");
   };
 
   return (
@@ -114,7 +107,7 @@ export default function Login() {
 
           <p className="text-center text-xs text-muted-foreground mt-6">
             {t("auth.noAccount")}{" "}
-            <Link to="/" className="text-primary hover:text-primary/80 font-medium transition-colors">
+            <Link to="/register" className="text-primary hover:text-primary/80 font-medium transition-colors">
               {t("auth.createAccount")}
             </Link>
           </p>

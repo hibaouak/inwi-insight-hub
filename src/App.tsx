@@ -6,8 +6,8 @@ import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { AuthProvider, useAuth } from "@/contexts/AuthContext";
 import "@/i18n";
-import Register from "./pages/Register";
 import Login from "./pages/Login";
+import Register from "./pages/Register";
 import Dashboard from "./pages/Dashboard";
 import ChatIA from "./pages/ChatIA";
 import ChatHistorique from "./pages/ChatHistorique";
@@ -26,38 +26,31 @@ function ProtectedRoute({ children }: { children: React.ReactNode }) {
 function AdminRoute({ children }: { children: React.ReactNode }) {
   const { isAuthenticated, isAdmin } = useAuth();
   if (!isAuthenticated) return <Navigate to="/" replace />;
-  if (!isAdmin) return <Navigate to="/app/chat" replace />;
-  return <>{children}</>;
-}
-
-function TechnicianRoute({ children }: { children: React.ReactNode }) {
-  const { isAuthenticated, isAdmin } = useAuth();
-  if (!isAuthenticated) return <Navigate to="/" replace />;
-  if (isAdmin) return <Navigate to="/app" replace />;
+  if (!isAdmin) return <Navigate to="/app" replace />;
   return <>{children}</>;
 }
 
 function PublicRoute({ children }: { children: React.ReactNode }) {
-  const { isAuthenticated, isAdmin } = useAuth();
+  const { isAuthenticated } = useAuth();
   if (!isAuthenticated) return <>{children}</>;
-  return <Navigate to={isAdmin ? "/app" : "/app/chat"} replace />;
+  return <Navigate to="/app" replace />;
 }
 
 function AppRoutes() {
   return (
     <Routes>
-      <Route path="/" element={<PublicRoute><Register /></PublicRoute>} />
+      <Route path="/" element={<PublicRoute><Login /></PublicRoute>} />
       <Route path="/login" element={<PublicRoute><Login /></PublicRoute>} />
+      <Route path="/register" element={<PublicRoute><Register /></PublicRoute>} />
       <Route
         path="/app"
         element={<ProtectedRoute><AppLayout /></ProtectedRoute>}
       >
-        {/* Admin-only routes */}
-        <Route index element={<AdminRoute><Dashboard /></AdminRoute>} />
-        <Route path="historique" element={<AdminRoute><ChatHistorique /></AdminRoute>} />
+        {/* Dashboard: accessible to all authenticated users */}
+        <Route index element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
+        <Route path="historique" element={<ProtectedRoute><ChatHistorique /></ProtectedRoute>} />
         <Route path="settings" element={<AdminRoute><Settings /></AdminRoute>} />
         <Route path="admin" element={<AdminRoute><Admin /></AdminRoute>} />
-        {/* Shared: both admin and technician */}
         <Route path="chat" element={<ProtectedRoute><ChatIA /></ProtectedRoute>} />
       </Route>
       <Route path="*" element={<NotFound />} />
