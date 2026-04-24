@@ -58,7 +58,7 @@ export function AppLayout() {
           <header className="h-14 shrink-0 border-b border-border/60 glass-strong flex items-center px-4 gap-3 sticky top-0 z-30">
             <SidebarTrigger className="text-muted-foreground hover:text-foreground" />
             <div className="flex items-center gap-2 text-sm">
-              <Link to={isAdmin ? "/app" : "/app/chat"} className="text-muted-foreground hover:text-foreground transition-colors">
+              <Link to="/app" className="text-muted-foreground hover:text-foreground transition-colors">
                 {t("common.appName")}
               </Link>
               <span className="text-muted-foreground/40">/</span>

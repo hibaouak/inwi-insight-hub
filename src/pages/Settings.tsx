@@ -1,8 +1,8 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import {
   User, Lock, Bell, Palette, Link2, Save, Check, Eye, EyeOff,
-  Shield, Database, Zap, CheckCircle2, XCircle,
+  Shield, Database, Zap, CheckCircle2, XCircle, UserCheck,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -11,9 +11,10 @@ import { Switch } from "@/components/ui/switch";
 import { cn } from "@/lib/utils";
 import { useAuth, UserRole } from "@/contexts/AuthContext";
 
-type Tab = "profil" | "securite" | "notifications" | "apparence" | "integrations";
+type Tab = "compte" | "profil" | "securite" | "notifications" | "apparence" | "integrations";
 
 const TABS: { id: Tab; label: string; icon: React.ElementType }[] = [
+  { id: "compte", label: "Compte", icon: UserCheck },
   { id: "profil", label: "Profil", icon: User },
   { id: "securite", label: "Sécurité", icon: Lock },
   { id: "notifications", label: "Notifications", icon: Bell },
@@ -46,6 +47,111 @@ function SectionCard({ title, desc, children }: { title: string; desc?: string; 
   );
 }
 
+/* ─── COMPTE ─── */
+interface StoredUser { name: string; email: string; password: string; role: "admin" | "technician" }
+
+function TabCompte() {
+  const { user, isAdmin } = useAuth();
+  const [allUsers, setAllUsers] = useState<StoredUser[]>([]);
+
+  useEffect(() => {
+    const stored = localStorage.getItem("inwi_users");
+    if (stored) setAllUsers(JSON.parse(stored));
+  }, []);
+
+  const adminCount = allUsers.filter(u => u.role === "admin").length;
+  const techCount = allUsers.filter(u => u.role === "technician").length;
+
+  return (
+    <div className="space-y-4">
+      <SectionCard title="Informations d'inscription" desc="Données associées à votre compte.">
+        <div className="space-y-3">
+          {[
+            { label: "Nom complet", value: user?.name },
+            { label: "Adresse e-mail", value: user?.email },
+            { label: "Rôle", value: user?.role === "admin" ? "Administrateur" : "Technicien" },
+          ].map(row => (
+            <div key={row.label} className="flex items-center justify-between py-2.5 border-b border-border/30 last:border-0">
+              <span className="text-xs text-muted-foreground">{row.label}</span>
+              <span className={cn(
+                "text-xs font-medium px-2.5 py-1 rounded-md",
+                row.label === "Rôle"
+                  ? user?.role === "admin"
+                    ? "bg-warning/15 text-warning"
+                    : "bg-success/15 text-success"
+                  : "text-foreground"
+              )}>
+                {row.value ?? "—"}
+              </span>
+            </div>
+          ))}
+        </div>
+      </SectionCard>
+
+      {isAdmin && (
+        <SectionCard title="Utilisateurs enregistrés" desc="Vue d'ensemble de tous les comptes de la plateforme.">
+          <div className="flex gap-4 mb-5">
+            <div className="flex-1 glass rounded-xl p-4 border border-border/40 text-center">
+              <div className="text-2xl font-bold text-primary">{allUsers.length}</div>
+              <div className="text-xs text-muted-foreground mt-1">Total</div>
+            </div>
+            <div className="flex-1 glass rounded-xl p-4 border border-border/40 text-center">
+              <div className="text-2xl font-bold text-warning">{adminCount}</div>
+              <div className="text-xs text-muted-foreground mt-1">Admins</div>
+            </div>
+            <div className="flex-1 glass rounded-xl p-4 border border-border/40 text-center">
+              <div className="text-2xl font-bold text-success">{techCount}</div>
+              <div className="text-xs text-muted-foreground mt-1">Techniciens</div>
+            </div>
+          </div>
+
+          <div className="overflow-x-auto">
+            <table className="w-full text-sm">
+              <thead>
+                <tr className="border-b border-border/60">
+                  <th className="text-left pb-2 text-xs text-muted-foreground font-medium">Nom</th>
+                  <th className="text-left pb-2 text-xs text-muted-foreground font-medium">Email</th>
+                  <th className="text-left pb-2 text-xs text-muted-foreground font-medium">Rôle</th>
+                </tr>
+              </thead>
+              <tbody>
+                {allUsers.length === 0 && (
+                  <tr>
+                    <td colSpan={3} className="py-6 text-center text-xs text-muted-foreground">
+                      Aucun utilisateur enregistré.
+                    </td>
+                  </tr>
+                )}
+                {allUsers.map(u => (
+                  <tr key={u.email} className="border-b border-border/20 last:border-0 hover:bg-surface/30 transition-colors">
+                    <td className="py-2.5">
+                      <div className="flex items-center gap-2">
+                        <div className="h-6 w-6 rounded-full bg-gradient-primary flex items-center justify-center text-[10px] font-bold text-white shrink-0">
+                          {u.name.split(" ").map(n => n[0]).join("").toUpperCase().slice(0, 2)}
+                        </div>
+                        <span className="text-xs font-medium">{u.name}</span>
+                      </div>
+                    </td>
+                    <td className="py-2.5 text-xs text-muted-foreground">{u.email}</td>
+                    <td className="py-2.5">
+                      <span className={cn(
+                        "text-[10px] font-semibold px-2 py-0.5 rounded-md",
+                        u.role === "admin" ? "bg-warning/15 text-warning" : "bg-success/15 text-success"
+                      )}>
+                        {u.role === "admin" ? "Admin" : "Technicien"}
+                      </span>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </SectionCard>
+      )}
+    </div>
+  );
+}
+
 /* ─── PROFIL ─── */
 function TabProfil() {
   const { user, updateUser } = useAuth();
@@ -56,13 +162,14 @@ function TabProfil() {
   });
   const [saved, setSaved] = useState(false);
 
+  type UserRole = typeof user extends { role?: infer R } ? R : never;
+
   const set = (k: keyof typeof form) => (e: React.ChangeEvent<HTMLInputElement>) =>
     setForm(f => ({ ...f, [k]: e.target.value }));
 
   const save = (e: React.FormEvent) => {
     e.preventDefault();
-    const role = form.role ? (form.role as UserRole) : undefined;
-    updateUser({ name: form.name, email: form.email, role });
+    updateUser({ name: form.name, email: form.email, role: form.role });
     setSaved(true);
     setTimeout(() => setSaved(false), 2500);
   };
@@ -407,9 +514,10 @@ function TabIntegrations() {
 
 /* ─── MAIN ─── */
 export default function Settings() {
-  const [activeTab, setActiveTab] = useState<Tab>("profil");
+  const [activeTab, setActiveTab] = useState<Tab>("compte");
 
   const panels: Record<Tab, React.ReactNode> = {
+    compte: <TabCompte />,
     profil: <TabProfil />,
     securite: <TabSecurite />,
     notifications: <TabNotifications />,
@@ -433,7 +541,7 @@ export default function Settings() {
                 <button
                   onClick={() => setActiveTab(tab.id)}
                   className={cn(
-                    "w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all",
+                    "relative w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all",
                     activeTab === tab.id
                       ? "bg-primary/10 text-foreground"
                       : "text-muted-foreground hover:text-foreground hover:bg-surface/60"

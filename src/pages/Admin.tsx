@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
-import { Users, Shield, Activity, Settings2, Trash2, CheckCircle2, XCircle, RefreshCw, UserPlus, Clock } from "lucide-react";
-import { motion } from "framer-motion";
+import { Users, Shield, Activity, Settings2, Trash2, CheckCircle2, XCircle, RefreshCw, UserPlus, Clock, X } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
 import { cn } from "@/lib/utils";
 
 type UserRole = "admin" | "technician";
@@ -31,11 +31,17 @@ const INTEGRATIONS = [
 const TABS = ["users", "systemStatus", "auditLogs", "platformConfig"] as const;
 type Tab = typeof TABS[number];
 
+const EMPTY_FORM = { name: "", email: "", password: "", role: "" as UserRole | "" };
+
 export default function Admin() {
   const { t } = useTranslation();
   const [tab, setTab] = useState<Tab>("users");
   const [users, setUsers] = useState<StoredUser[]>([]);
   const [confirmDelete, setConfirmDelete] = useState<string | null>(null);
+  const [showCreateForm, setShowCreateForm] = useState(false);
+  const [createForm, setCreateForm] = useState(EMPTY_FORM);
+  const [createError, setCreateError] = useState("");
+  const [createSuccess, setCreateSuccess] = useState(false);
   const [auditLogs] = useState<AuditEntry[]>([
     { id: "1", event: t("admin.userLogin"), user: "admin@inwi.ma", date: "2026-04-23 09:12", type: "login" },
     { id: "2", event: t("admin.userCreated"), user: "admin@inwi.ma", date: "2026-04-22 15:30", type: "create" },
@@ -61,6 +67,32 @@ export default function Admin() {
     const updated = users.map(u => u.email === email ? { ...u, role } : u);
     setUsers(updated);
     localStorage.setItem("inwi_users", JSON.stringify(updated));
+  };
+
+  const setField = (k: keyof typeof EMPTY_FORM) => (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) =>
+    setCreateForm(f => ({ ...f, [k]: e.target.value }));
+
+  const submitCreate = (e: React.FormEvent) => {
+    e.preventDefault();
+    setCreateError("");
+    if (!createForm.name.trim()) return setCreateError("Le nom est requis.");
+    if (!createForm.email.includes("@")) return setCreateError("Email invalide.");
+    if (createForm.password.length < 6) return setCreateError("Mot de passe trop court (6 caractères min).");
+    if (!createForm.role) return setCreateError("Veuillez sélectionner un rôle.");
+    if (users.find(u => u.email === createForm.email.trim())) return setCreateError("Cet email est déjà utilisé.");
+    const newUser: StoredUser = {
+      name: createForm.name.trim(),
+      email: createForm.email.trim(),
+      password: createForm.password,
+      role: createForm.role as UserRole,
+    };
+    const updated = [...users, newUser];
+    setUsers(updated);
+    localStorage.setItem("inwi_users", JSON.stringify(updated));
+    setCreateForm(EMPTY_FORM);
+    setCreateSuccess(true);
+    setTimeout(() => setCreateSuccess(false), 3000);
+    setShowCreateForm(false);
   };
 
   const adminCount = users.filter(u => u.role === "admin").length;
@@ -141,7 +173,97 @@ export default function Admin() {
                 <h2 className="font-semibold">{t("admin.users")}</h2>
                 <p className="text-xs text-muted-foreground mt-0.5">{t("admin.usersDesc")}</p>
               </div>
+              <button
+                onClick={() => { setShowCreateForm(v => !v); setCreateError(""); }}
+                className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-primary text-white text-xs font-medium hover:opacity-90 transition-opacity"
+              >
+                <UserPlus className="h-3.5 w-3.5" />
+                Créer un utilisateur
+              </button>
             </div>
+
+            <AnimatePresence>
+              {showCreateForm && (
+                <motion.div
+                  initial={{ opacity: 0, height: 0 }}
+                  animate={{ opacity: 1, height: "auto" }}
+                  exit={{ opacity: 0, height: 0 }}
+                  transition={{ duration: 0.2 }}
+                  className="overflow-hidden border-b border-border/60"
+                >
+                  <form onSubmit={submitCreate} className="p-5 bg-surface/30 grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div className="space-y-1">
+                      <label className="text-xs text-muted-foreground">Nom complet</label>
+                      <input
+                        type="text"
+                        placeholder="Youssef El Amrani"
+                        value={createForm.name}
+                        onChange={setField("name")}
+                        className="w-full h-9 rounded-md border border-border/60 bg-surface/60 px-3 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/50"
+                      />
+                    </div>
+                    <div className="space-y-1">
+                      <label className="text-xs text-muted-foreground">Email</label>
+                      <input
+                        type="email"
+                        placeholder="utilisateur@inwi.ma"
+                        value={createForm.email}
+                        onChange={setField("email")}
+                        className="w-full h-9 rounded-md border border-border/60 bg-surface/60 px-3 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/50"
+                      />
+                    </div>
+                    <div className="space-y-1">
+                      <label className="text-xs text-muted-foreground">Mot de passe</label>
+                      <input
+                        type="password"
+                        placeholder="6+ caractères"
+                        value={createForm.password}
+                        onChange={setField("password")}
+                        className="w-full h-9 rounded-md border border-border/60 bg-surface/60 px-3 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/50"
+                      />
+                    </div>
+                    <div className="space-y-1">
+                      <label className="text-xs text-muted-foreground">Rôle</label>
+                      <select
+                        value={createForm.role}
+                        onChange={setField("role")}
+                        className="w-full h-9 rounded-md border border-border/60 bg-surface/60 px-3 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/50"
+                      >
+                        <option value="" disabled>Sélectionner un rôle</option>
+                        <option value="admin">{t("auth.roleAdmin")}</option>
+                        <option value="technician">{t("auth.roleTechnician")}</option>
+                      </select>
+                    </div>
+                    {createError && (
+                      <div className="sm:col-span-2 text-xs text-danger bg-danger/10 border border-danger/20 rounded-lg px-3 py-2">
+                        {createError}
+                      </div>
+                    )}
+                    <div className="sm:col-span-2 flex items-center gap-3">
+                      <button
+                        type="submit"
+                        className="px-4 py-1.5 rounded-lg bg-primary text-white text-xs font-medium hover:opacity-90 transition-opacity"
+                      >
+                        Créer le compte
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => { setShowCreateForm(false); setCreateError(""); setCreateForm(EMPTY_FORM); }}
+                        className="px-3 py-1.5 rounded-lg text-xs text-muted-foreground hover:text-foreground hover:bg-surface-elevated transition-colors flex items-center gap-1"
+                      >
+                        <X className="h-3 w-3" /> Annuler
+                      </button>
+                    </div>
+                  </form>
+                </motion.div>
+              )}
+            </AnimatePresence>
+
+            {createSuccess && (
+              <div className="mx-5 mt-4 text-xs text-success bg-success/10 border border-success/20 rounded-lg px-3 py-2 flex items-center gap-2">
+                <CheckCircle2 className="h-3.5 w-3.5" /> Utilisateur créé avec succès.
+              </div>
+            )}
             <div className="overflow-x-auto">
               <table className="w-full text-sm">
                 <thead>
