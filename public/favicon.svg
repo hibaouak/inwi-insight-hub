@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 200">
+  <rect width="320" height="200" rx="20" fill="#8B1FA8"/>
+  <text
+    x="152"
+    y="138"
+    font-family="'Arial Rounded MT Bold', 'Varela Round', Arial, sans-serif"
+    font-size="96"
+    font-weight="900"
+    fill="white"
+    text-anchor="middle"
+    letter-spacing="-3">inwi</text>
+  <text
+    x="270"
+    y="82"
+    font-family="Arial, sans-serif"
+    font-size="28"
+    fill="white">&#x2122;</text>
+</svg>
