@@ -38,7 +38,7 @@ function TechnicianRoute({ children }: { children: React.ReactNode }) {
 }
 
 function PublicRoute({ children }: { children: React.ReactNode }) {
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated, isAdmin } = useAuth();
   if (!isAuthenticated) return <>{children}</>;
   return <Navigate to={isAdmin ? "/app" : "/app/chat"} replace />;
 }

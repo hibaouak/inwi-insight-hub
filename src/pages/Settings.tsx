@@ -169,7 +169,7 @@ function TabProfil() {
 
   const save = (e: React.FormEvent) => {
     e.preventDefault();
-    updateUser({ name: form.name, email: form.email, role: form.role });
+    updateUser({ name: form.name, email: form.email, role: form.role || undefined });
     setSaved(true);
     setTimeout(() => setSaved(false), 2500);
   };
