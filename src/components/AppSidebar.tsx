@@ -25,7 +25,9 @@ export function AppSidebar() {
   ];
 
   const technicianNavItems = [
+    { title: t("nav.dashboard"), url: "/app", icon: LayoutDashboard },
     { title: t("nav.chatIA"), url: "/app/chat", icon: MessageSquare, badge: "IA" },
+    { title: t("nav.history"), url: "/app/historique", icon: History },
   ];
 
   const mainItems = isAdmin ? adminNavItems : technicianNavItems;
