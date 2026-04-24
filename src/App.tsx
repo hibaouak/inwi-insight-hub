@@ -26,7 +26,7 @@ function ProtectedRoute({ children }: { children: React.ReactNode }) {
 function AdminRoute({ children }: { children: React.ReactNode }) {
   const { isAuthenticated, isAdmin } = useAuth();
   if (!isAuthenticated) return <Navigate to="/" replace />;
-  if (!isAdmin) return <Navigate to="/app/chat" replace />;
+  if (!isAdmin) return <Navigate to="/app" replace />;
   return <>{children}</>;
 }
 
@@ -40,7 +40,7 @@ function TechnicianRoute({ children }: { children: React.ReactNode }) {
 function PublicRoute({ children }: { children: React.ReactNode }) {
   const { isAuthenticated, isAdmin } = useAuth();
   if (!isAuthenticated) return <>{children}</>;
-  return <Navigate to={isAdmin ? "/app" : "/app/chat"} replace />;
+  return <Navigate to={isAdmin ? "/app" : "/app"} replace />;
 }
 
 function AppRoutes() {
@@ -53,11 +53,11 @@ function AppRoutes() {
         element={<ProtectedRoute><AppLayout /></ProtectedRoute>}
       >
         {/* Admin-only routes */}
-        <Route index element={<AdminRoute><Dashboard /></AdminRoute>} />
-        <Route path="historique" element={<AdminRoute><ChatHistorique /></AdminRoute>} />
         <Route path="settings" element={<AdminRoute><Settings /></AdminRoute>} />
         <Route path="admin" element={<AdminRoute><Admin /></AdminRoute>} />
         {/* Shared: both admin and technician */}
+        <Route index element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
+        <Route path="historique" element={<ProtectedRoute><ChatHistorique /></ProtectedRoute>} />
         <Route path="chat" element={<ProtectedRoute><ChatIA /></ProtectedRoute>} />
       </Route>
       <Route path="*" element={<NotFound />} />

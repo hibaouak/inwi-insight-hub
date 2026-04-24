@@ -9,7 +9,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { cn } from "@/lib/utils";
-import { useAuth } from "@/contexts/AuthContext";
+import { useAuth, UserRole } from "@/contexts/AuthContext";
 
 type Tab = "profil" | "securite" | "notifications" | "apparence" | "integrations";
 
@@ -52,7 +52,7 @@ function TabProfil() {
   const [form, setForm] = useState({
     name: user?.name ?? "",
     email: user?.email ?? "",
-    role: user?.role ?? "",
+    role: user?.role ?? "" as UserRole | "",
   });
   const [saved, setSaved] = useState(false);
 
@@ -61,7 +61,8 @@ function TabProfil() {
 
   const save = (e: React.FormEvent) => {
     e.preventDefault();
-    updateUser({ name: form.name, email: form.email, role: form.role });
+    const role = form.role ? (form.role as UserRole) : undefined;
+    updateUser({ name: form.name, email: form.email, role });
     setSaved(true);
     setTimeout(() => setSaved(false), 2500);
   };
